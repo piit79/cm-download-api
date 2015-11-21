@@ -245,7 +245,6 @@ class Api
             if (!is_file($file_path_full) || substr($filename, -4) != ".zip") {
                 continue;
             }
-            $build_date = $this->getBuildDate($filename);
             $file_url = $this->base_url . '/' . $file_path_rel;
             $stat = stat($file_path_full);
             $timestamp = $stat[9];
@@ -260,17 +259,16 @@ class Api
             }
             $incremental = "4a97bfd9e2";
             $changes = $this->base_url . '/' . $device . '/' . str_replace(".zip", ".changes", $filename);
-            $build = array(
-                'url' => $file_url,
-                'filename' => $filename,
-                'timestamp' => $timestamp,
-                'md5sum' => $md5sum,
-                'incremental' => $incremental,
-                'changes' => $changes,
-                'channel' => $channel,
-                'api_level' => $api_level,
-            );
-            $result[] = $build;
+            $build = Api\Build::factory()
+                ->setUrl($file_url)
+                ->setFilename($filename)
+                ->setTimestamp($timestamp)
+                ->setMd5sum($md5sum)
+                ->setIncremental($incremental)
+                ->setChanges($changes)
+                ->setChannel($channel)
+                ->setApiLevel($api_level);
+            $result[] = $build->toArray();
         }
         $output['result'] = $result;
         $this->response(200, self::TYPE_JSON, $output);
