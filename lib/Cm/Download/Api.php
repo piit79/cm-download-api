@@ -24,21 +24,21 @@ namespace Cm\Download {
          *
          * @var string
          */
-        private $base_url;
+        private $baseUrl;
 
         /**
          * Request content type
          *
          * @var string
          */
-        private $content_type;
+        private $contentType;
 
         /**
          * Request method (GET/POST...)
          *
          * @var string
          */
-        private $request_method;
+        private $requestMethod;
 
         /**
          * Request URI
@@ -52,7 +52,7 @@ namespace Cm\Download {
          *
          * @var array
          */
-        private $uri_parts;
+        private $uriParts;
 
         /**
          * Array containing request decoded from json
@@ -62,15 +62,15 @@ namespace Cm\Download {
         private $request;
 
         /**
-         * CmDownloadApi constructor.
+         * CmDownloadApi constructor
          *
          * @param string $root
-         * @param string $base_url
+         * @param string $baseUrl
          */
-        function __construct($root, $base_url)
+        function __construct($root, $baseUrl)
         {
             $this->root = $root;
-            $this->base_url = $base_url;
+            $this->baseUrl = $baseUrl;
         }
 
         /**
@@ -78,18 +78,18 @@ namespace Cm\Download {
          */
         protected function getRequest()
         {
-            $this->request_method = $_SERVER['REQUEST_METHOD'];
-            $this->content_type = $this->getContentType();
+            $this->requestMethod = $_SERVER['REQUEST_METHOD'];
+            $this->contentType = $this->getContentType();
             $this->uri = $_SERVER['REQUEST_URI'];
-            $uri_parts = explode('/', $this->uri);
-            $this->uri_parts = array();
-            foreach ($uri_parts as $part) {
+            $uriParts = explode('/', $this->uri);
+            $this->uriParts = array();
+            foreach ($uriParts as $part) {
                 if ($part != "") {
-                    $this->uri_parts[] = $part;
+                    $this->uriParts[] = $part;
                 }
             }
 
-            switch ($this->request_method) {
+            switch ($this->requestMethod) {
                 case 'POST':
                     $this->request = $this->decodeRequest();
                     break;
@@ -107,14 +107,14 @@ namespace Cm\Download {
          */
         protected function getContentType()
         {
-            $content_type_value = $_SERVER['CONTENT_TYPE'];
-            if (strpos($content_type_value, ';') === FALSE) {
-                $content_type = $content_type_value;
+            $contentTypeHeader = $_SERVER['CONTENT_TYPE'];
+            if (strpos($contentTypeHeader, ';') === FALSE) {
+                $contentType = $contentTypeHeader;
             } else {
-                list($content_type) = explode(';', $content_type_value);
+                list($contentType) = explode(';', $contentTypeHeader);
             }
 
-            return $content_type;
+            return $contentType;
         }
 
         /**
@@ -124,11 +124,11 @@ namespace Cm\Download {
          */
         protected function decodeRequest()
         {
-            $request_data = file_get_contents("php://input");
+            $requestData = file_get_contents("php://input");
 
-            switch ($this->content_type) {
+            switch ($this->contentType) {
                 case self::TYPE_JSON:
-                    $json = json_decode($request_data, TRUE);
+                    $json = json_decode($requestData, TRUE);
                     return $json;
                     break;
             }
@@ -151,8 +151,8 @@ namespace Cm\Download {
                     return $this->request['method'];
                 }
             } elseif (strpos($this->uri, self::URI_API_V1) === 0) {
-                reset($this->uri_parts);
-                $method = end($this->uri_parts);
+                reset($this->uriParts);
+                $method = end($this->uriParts);
                 if (method_exists($this, $method)) {
                     return $method;
                 }
@@ -228,7 +228,7 @@ namespace Cm\Download {
             }
             $device = $this->request['params']['device'];
             $channel = "nightly";
-            $api_level = 23;
+            $apiLevel = 23;
             $device_dir = $this->root . DIRECTORY_SEPARATOR . $device;
             if (is_dir($device_dir)) {
                 $files = scandir($device_dir);
@@ -245,29 +245,29 @@ namespace Cm\Download {
                 if (!is_file($file_path_full) || substr($filename, -4) != ".zip") {
                     continue;
                 }
-                $file_url = $this->base_url . '/' . $file_path_rel;
+                $fileUrl = $this->baseUrl . '/' . $file_path_rel;
                 $stat = stat($file_path_full);
                 $timestamp = $stat[9];
-                $md5sum_file = $file_path_full . ".md5sum";
+                $md5sumFile = $file_path_full . ".md5sum";
                 $md5sum = NULL;
-                if (is_file($md5sum_file)) {
-                    $md5sum_contents = file_get_contents($md5sum_file);
-                    list($md5sum_line) = explode("\n", $md5sum_contents);
-                    if (preg_match('/^([0-9a-f]{32}) /', $md5sum_line, $m)) {
+                if (is_file($md5sumFile)) {
+                    $md5sumContents = file_get_contents($md5sumFile);
+                    list($md5sumLine) = explode("\n", $md5sumContents);
+                    if (preg_match('/^([0-9a-f]{32}) /', $md5sumLine, $m)) {
                         $md5sum = $m[1];
                     }
                 }
                 $incremental = "4a97bfd9e2";
-                $changes = $this->base_url . '/' . $device . '/' . str_replace(".zip", ".changes", $filename);
+                $changes = $this->baseUrl . '/' . $device . '/' . str_replace(".zip", ".changes", $filename);
                 $build = Api\Build::factory()
-                    ->setUrl($file_url)
+                    ->setUrl($fileUrl)
                     ->setFilename($filename)
                     ->setTimestamp($timestamp)
                     ->setMd5sum($md5sum)
                     ->setIncremental($incremental)
                     ->setChanges($changes)
                     ->setChannel($channel)
-                    ->setApiLevel($api_level);
+                    ->setApiLevel($apiLevel);
                 $result[] = $build->toArray();
             }
             $output['result'] = $result;
@@ -279,7 +279,7 @@ namespace Cm\Download {
          */
         protected function get_delta()
         {
-            $response_invalid_input = array(
+            $responseInvalidInput = array(
                 'errors' => array(
                     array(
                         'reason' => "internal server error",
@@ -287,14 +287,14 @@ namespace Cm\Download {
                     ),
                 ),
             );
-            $response_delta_not_found = array(
+            $responseDeltaNotFound = array(
                 'errors' => array(
                     array(
                         'message' => "Unable to find delta",
                     ),
                 ),
             );
-            $this->response(200, self::TYPE_JSON, $response_delta_not_found);
+            $this->response(200, self::TYPE_JSON, $responseDeltaNotFound);
         }
     }
 }
