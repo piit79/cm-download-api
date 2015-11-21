@@ -1,6 +1,9 @@
 <?php
 
-class CmDownloadApi
+namespace Cm\Download;
+
+
+class Api
 {
 
     const URI_API = '/api';
