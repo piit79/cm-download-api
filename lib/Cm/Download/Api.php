@@ -9,8 +9,8 @@ namespace Cm\Download {
         const URI_API = '/api';
         const URI_API_V1 = '/api/v1/';
 
-        const TYPE_TEXT = "text/plain";
-        const TYPE_JSON = "application/json";
+        const CONTENT_TYPE_TEXT = "text/plain";
+        const CONTENT_TYPE_JSON = "application/json";
 
         /**
          * Build filesystem root
@@ -95,7 +95,7 @@ namespace Cm\Download {
                     break;
 
                 default:
-                    $this->response(405, self::TYPE_TEXT, "405 Method Not Allowed\n\nThe method GET is not allowed for this resource.");
+                    $this->response(405, self::CONTENT_TYPE_TEXT, "405 Method Not Allowed\n\nThe method GET is not allowed for this resource.");
                     exit();
             }
         }
@@ -127,7 +127,7 @@ namespace Cm\Download {
             $requestData = file_get_contents("php://input");
 
             switch ($this->contentType) {
-                case self::TYPE_JSON:
+                case self::CONTENT_TYPE_JSON:
                     $json = json_decode($requestData, TRUE);
                     return $json;
                     break;
@@ -271,7 +271,7 @@ namespace Cm\Download {
                 $result[] = $build->toArray();
             }
             $output['result'] = $result;
-            $this->response(200, self::TYPE_JSON, $output);
+            $this->response(200, self::CONTENT_TYPE_JSON, $output);
         }
 
         /**
@@ -294,7 +294,7 @@ namespace Cm\Download {
                     ),
                 ),
             );
-            $this->response(200, self::TYPE_JSON, $responseDeltaNotFound);
+            $this->response(200, self::CONTENT_TYPE_JSON, $responseDeltaNotFound);
         }
     }
 }
