@@ -259,7 +259,7 @@ namespace Cm\Download {
                 }
                 $incremental = "4a97bfd9e2";
                 $changes = $this->baseUrl . '/' . $device . '/' . str_replace(".zip", ".changes", $filename);
-                $build = Api\Build::factory()
+                $build = Api\Build::create()
                     ->setUrl($fileUrl)
                     ->setFilename($filename)
                     ->setTimestamp($timestamp)

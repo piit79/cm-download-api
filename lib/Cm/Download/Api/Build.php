@@ -46,7 +46,7 @@ namespace Cm\Download\Api {
         private $apiLevel;
 
         /**
-         * Build constructor.
+         * Build constructor
          * @param string $filename
          * @param int $timestamp
          * @param string $md5sum
@@ -68,11 +68,18 @@ namespace Cm\Download\Api {
 
         /**
          * Factory method
+         * @param string $filename
+         * @param int $timestamp
+         * @param string $md5sum
+         * @param string $incremental
+         * @param string $changes
+         * @param string $channel
+         * @param string $api_level
          * @return Build
          */
-        public static function factory()
+        public static function create($filename = "", $timestamp = NULL, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = NULL)
         {
-            return new self();
+            return new self($filename, $timestamp, $md5sum, $incremental, $changes, $channel, $api_level);
         }
 
         /**
