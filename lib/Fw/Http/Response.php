@@ -102,10 +102,10 @@ namespace Fw\Http {
          *
          * @param string $name header name
          * @param string|string[] $value header value
-         * @param boolean $multiValues if FALSE, overwrites current header with the same name; otherwise adds another value
+         * @param boolean $multiValues if false, overwrites current header with the same name; otherwise adds another value
          * @return Response $this Updated object
          */
-        public function addHeader($name, $value, $multiValues = FALSE)
+        public function addHeader($name, $value, $multiValues = false)
         {
             // if header already exists
             if (isset($this->headers[$name]) && $multiValues) {
@@ -126,14 +126,14 @@ namespace Fw\Http {
 
         /**
          * @param string $name header name
-         * @return string|string[]|null header value(s) or NULL if not exists
+         * @return string|string[]|null header value(s) or null if not exists
          */
         public function getHeader($name)
         {
             if (isset($this->headers[$name])) {
                 return $this->headers[$name];
             }
-            return NULL;
+            return null;
         }
 
         /**

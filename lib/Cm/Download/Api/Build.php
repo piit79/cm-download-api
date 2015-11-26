@@ -55,7 +55,7 @@ namespace Cm\Download\Api {
          * @param string $channel
          * @param string $api_level
          */
-        public function __construct($filename = "", $timestamp = NULL, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = NULL)
+        public function __construct($filename = "", $timestamp = null, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = null)
         {
             $this->filename = $filename;
             $this->timestamp = $timestamp;
@@ -77,7 +77,7 @@ namespace Cm\Download\Api {
          * @param string $api_level
          * @return Build
          */
-        public static function create($filename = "", $timestamp = NULL, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = NULL)
+        public static function create($filename = "", $timestamp = null, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = null)
         {
             return new self($filename, $timestamp, $md5sum, $incremental, $changes, $channel, $api_level);
         }

@@ -109,7 +109,7 @@ namespace Cm\Download {
         protected function getContentType()
         {
             $contentTypeHeader = $_SERVER['CONTENT_TYPE'];
-            if (strpos($contentTypeHeader, ';') === FALSE) {
+            if (strpos($contentTypeHeader, ';') === false) {
                 $contentType = $contentTypeHeader;
             } else {
                 list($contentType) = explode(';', $contentTypeHeader);
@@ -129,12 +129,12 @@ namespace Cm\Download {
 
             switch ($this->contentType) {
                 case Http::CONTENT_TYPE_JSON:
-                    $json = json_decode($requestData, TRUE);
+                    $json = json_decode($requestData, true);
                     return $json;
                     break;
             }
 
-            return FALSE;
+            return false;
         }
 
         /**
@@ -158,7 +158,7 @@ namespace Cm\Download {
                     return $method;
                 }
             }
-            return FALSE;
+            return false;
         }
 
         /**
@@ -172,8 +172,8 @@ namespace Cm\Download {
             $apiCall = $this->getApiCall();
             if (!$apiCall) {
                 $output = array(
-                    'id' => NULL,
-                    'result' => NULL,
+                    'id' => null,
+                    'result' => null,
                     'error' => "Error decoding JSON",
                 );
                 Response::create(200, Http::CONTENT_TYPE_JSON, $output)->send();
@@ -212,8 +212,8 @@ namespace Cm\Download {
                 $files = array();
             }
             $output = array();
-            $output['id'] = NULL;
-            $output['error'] = NULL;
+            $output['id'] = null;
+            $output['error'] = null;
             $result = array();
             foreach ($files as $filename) {
                 $file_path_rel = $device . DIRECTORY_SEPARATOR . $filename;
@@ -225,7 +225,7 @@ namespace Cm\Download {
                 $stat = stat($file_path_full);
                 $timestamp = $stat[9];
                 $md5sumFile = $file_path_full . ".md5sum";
-                $md5sum = NULL;
+                $md5sum = null;
                 if (is_file($md5sumFile)) {
                     $md5sumContents = file_get_contents($md5sumFile);
                     list($md5sumLine) = explode("\n", $md5sumContents);

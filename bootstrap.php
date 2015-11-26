@@ -14,7 +14,7 @@ spl_autoload_register(function ($className) {
         . str_replace(array("\\", "_"), DIRECTORY_SEPARATOR, $match[2])
         . ".php";
     if (!include_once $classPath) {
-        return FALSE;
+        return false;
     }
-    return TRUE;
+    return true;
 });
