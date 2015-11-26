@@ -1,0 +1,4 @@
+<?php
+
+define("DOWNLOAD_ROOT", "/home/cm");
+define("DOWNLOAD_BASE_URL", "http://download.example.com/get");
