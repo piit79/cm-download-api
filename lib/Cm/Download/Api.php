@@ -3,14 +3,14 @@
 namespace Cm\Download {
 
 
+    use Fw\Http;
+    use Fw\Http\Response;
+
     class Api
     {
 
         const URI_API = '/api';
         const URI_API_V1 = '/api/v1/';
-
-        const CONTENT_TYPE_TEXT = "text/plain";
-        const CONTENT_TYPE_JSON = "application/json";
 
         /**
          * Build filesystem root
@@ -95,7 +95,8 @@ namespace Cm\Download {
                     break;
 
                 default:
-                    $this->response(405, self::CONTENT_TYPE_TEXT, "405 Method Not Allowed\n\nThe method GET is not allowed for this resource.");
+                    Response::create(405, Http::CONTENT_TYPE_TEXT,
+                        "405 Method Not Allowed\n\nThe method GET is not allowed for this resource.")->send();
                     exit();
             }
         }
@@ -127,7 +128,7 @@ namespace Cm\Download {
             $requestData = file_get_contents("php://input");
 
             switch ($this->contentType) {
-                case self::CONTENT_TYPE_JSON:
+                case Http::CONTENT_TYPE_JSON:
                     $json = json_decode($requestData, TRUE);
                     return $json;
                     break;
@@ -175,35 +176,10 @@ namespace Cm\Download {
                     'result' => NULL,
                     'error' => "Error decoding JSON",
                 );
-                $this->response(200, self::TYPE_JSON, $output);
+                Response::create(200, Http::CONTENT_TYPE_JSON, $output)->send();
                 exit();
             }
             return $this->$apiCall();
-        }
-
-        /**
-         * Output a HTTP code along with result data
-         *
-         * @param $code int
-         * @param $content_type string
-         * @param string $message string|array
-         */
-        protected function response($code, $content_type, $message = "")
-        {
-            http_response_code($code);
-            header('Content-Type: ' . $content_type);
-            switch ($content_type) {
-                case self::TYPE_TEXT:
-                    echo $message;
-                    break;
-
-                case self::TYPE_JSON:
-                    echo json_encode($message, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-                    break;
-
-                default:
-                    echo $message;
-            }
         }
 
         /**
@@ -271,14 +247,16 @@ namespace Cm\Download {
                 $result[] = $build->toArray();
             }
             $output['result'] = $result;
-            $this->response(200, self::CONTENT_TYPE_JSON, $output);
+            Response::create(200, Http::CONTENT_TYPE_JSON, $output)->send();
         }
 
         /**
-         * get_delta API call - stub, always returns 500
+         * get_delta API call - stub, always returns 200 Unable to find delta
          */
         protected function get_delta()
         {
+            // TODO: investigate incremental updates
+            /** @noinspection PhpUnusedLocalVariableInspection */
             $responseInvalidInput = array(
                 'errors' => array(
                     array(
@@ -294,7 +272,7 @@ namespace Cm\Download {
                     ),
                 ),
             );
-            $this->response(200, self::CONTENT_TYPE_JSON, $responseDeltaNotFound);
+            Response::create(200, Http::CONTENT_TYPE_JSON, $responseDeltaNotFound)->send();
         }
     }
 }
