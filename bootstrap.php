@@ -1,20 +1,16 @@
 <?php
 
-define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'lib');
+require_once 'lib/Fw/Loader.php';
 
-// PSR-0 autoloader
-// http://zaemis.blogspot.fr/2012/05/writing-minimal-psr-0-autoloader.html
-// slightly modified
+define('APP_DIR', realpath(__DIR__));
+define('LIB_DIR', APP_DIR . DIRECTORY_SEPARATOR . "lib");
+define('DEBUG', false);
 
-spl_autoload_register(function ($className) {
-    $className = ltrim($className, "\\");
-    $match = array();
-    preg_match('/^(.+)?([^\\\\]+)$/U', $className, $match);
-    $classPath = ROOT_PATH . DIRECTORY_SEPARATOR . str_replace("\\", DIRECTORY_SEPARATOR, $match[1])
-        . str_replace(array("\\", "_"), DIRECTORY_SEPARATOR, $match[2])
-        . ".php";
-    if (!include_once $classPath) {
-        return false;
-    }
-    return true;
-});
+$loader = new \Fw\Loader(LIB_DIR);
+$loader->registerNamespaces(
+    array(
+        "Cm" => "Cm",
+        "Fw" => "Fw",
+    )
+);
+$loader->register();
