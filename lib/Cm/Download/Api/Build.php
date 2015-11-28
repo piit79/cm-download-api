@@ -47,16 +47,19 @@ namespace Cm\Download\Api {
 
         /**
          * Build constructor
+         * @param string $url
          * @param string $filename
          * @param int $timestamp
          * @param string $md5sum
          * @param string $incremental
          * @param string $changes
          * @param string $channel
-         * @param string $api_level
+         * @param int $api_level
          */
-        public function __construct($filename = "", $timestamp = null, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = null)
+        public function __construct($url = "", $filename = "", $timestamp = null, $md5sum = "", $incremental = "",
+                                    $changes = "", $channel = "", $api_level = null)
         {
+            $this->url = $url;
             $this->filename = $filename;
             $this->timestamp = $timestamp;
             $this->md5sum = $md5sum;
@@ -64,22 +67,6 @@ namespace Cm\Download\Api {
             $this->changes = $changes;
             $this->channel = $channel;
             $this->apiLevel = $api_level;
-        }
-
-        /**
-         * Factory method
-         * @param string $filename
-         * @param int $timestamp
-         * @param string $md5sum
-         * @param string $incremental
-         * @param string $changes
-         * @param string $channel
-         * @param string $api_level
-         * @return Build
-         */
-        public static function create($filename = "", $timestamp = null, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = null)
-        {
-            return new self($filename, $timestamp, $md5sum, $incremental, $changes, $channel, $api_level);
         }
 
         /**
@@ -97,7 +84,6 @@ namespace Cm\Download\Api {
         public function setUrl($url)
         {
             $this->url = $url;
-            return $this;
         }
 
         /**
@@ -115,7 +101,6 @@ namespace Cm\Download\Api {
         public function setFilename($filename)
         {
             $this->filename = $filename;
-            return $this;
         }
 
         /**
@@ -133,7 +118,6 @@ namespace Cm\Download\Api {
         public function setTimestamp($timestamp)
         {
             $this->timestamp = $timestamp;
-            return $this;
         }
 
         /**
@@ -151,7 +135,6 @@ namespace Cm\Download\Api {
         public function setMd5sum($md5sum)
         {
             $this->md5sum = $md5sum;
-            return $this;
         }
 
         /**
@@ -169,7 +152,6 @@ namespace Cm\Download\Api {
         public function setIncremental($incremental)
         {
             $this->incremental = $incremental;
-            return $this;
         }
 
         /**
@@ -187,7 +169,6 @@ namespace Cm\Download\Api {
         public function setChanges($changes)
         {
             $this->changes = $changes;
-            return $this;
         }
 
         /**
@@ -205,7 +186,6 @@ namespace Cm\Download\Api {
         public function setChannel($channel)
         {
             $this->channel = $channel;
-            return $this;
         }
 
         /**
@@ -223,7 +203,6 @@ namespace Cm\Download\Api {
         public function setApiLevel($apiLevel)
         {
             $this->apiLevel = $apiLevel;
-            return $this;
         }
 
         /**

@@ -235,15 +235,16 @@ namespace Cm\Download {
                 }
                 $incremental = "4a97bfd9e2";
                 $changes = $this->baseUrl . '/' . $device . '/' . str_replace(".zip", ".changes", $filename);
-                $build = Api\Build::create()
-                    ->setUrl($fileUrl)
-                    ->setFilename($filename)
-                    ->setTimestamp($timestamp)
-                    ->setMd5sum($md5sum)
-                    ->setIncremental($incremental)
-                    ->setChanges($changes)
-                    ->setChannel($channel)
-                    ->setApiLevel($apiLevel);
+                $build = new Api\Build(
+                    $fileUrl,
+                    $filename,
+                    $timestamp,
+                    $md5sum,
+                    $incremental,
+                    $changes,
+                    $channel,
+                    $apiLevel
+                );
                 $result[] = $build->toArray();
             }
             $output['result'] = $result;
