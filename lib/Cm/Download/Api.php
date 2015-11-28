@@ -140,7 +140,7 @@ namespace Cm\Download {
         /**
          * Get API call name
          *
-         * @return bool
+         * @return boolean
          */
         protected function getApiCall()
         {
@@ -164,7 +164,7 @@ namespace Cm\Download {
         /**
          * Handle the API request
          *
-         * @return bool
+         * @return boolean
          */
         public function handle()
         {
