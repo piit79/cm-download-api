@@ -4,6 +4,7 @@ namespace Cm\Download {
 
 
     use Fw\Http;
+    use Fw\Http\Request;
     use Fw\Http\Response;
 
     class Api
@@ -27,25 +28,9 @@ namespace Cm\Download {
         private $baseUrl;
 
         /**
-         * Request content type
-         *
-         * @var string
+         * @var Request
          */
-        private $contentType;
-
-        /**
-         * Request method (GET/POST...)
-         *
-         * @var string
-         */
-        private $requestMethod;
-
-        /**
-         * Request URI
-         *
-         * @var string
-         */
-        private $uri;
+        private $request;
 
         /**
          * Request URI parts split by /
@@ -55,14 +40,14 @@ namespace Cm\Download {
         private $uriParts;
 
         /**
-         * Array containing request decoded from json
+         * Array containing request data decoded from json
          *
          * @var array
          */
-        private $request;
+        private $requestData;
 
         /**
-         * CmDownloadApi constructor
+         * Api constructor
          *
          * @param string $root
          * @param string $baseUrl
@@ -74,14 +59,12 @@ namespace Cm\Download {
         }
 
         /**
-         *
+         * Get request info
          */
         protected function getRequest()
         {
-            $this->requestMethod = $_SERVER['REQUEST_METHOD'];
-            $this->contentType = $this->getContentType();
-            $this->uri = $_SERVER['REQUEST_URI'];
-            $uriParts = explode('/', $this->uri);
+            $this->request = new Request();
+            $uriParts = explode('/', $this->request->getURI());
             $this->uriParts = array();
             foreach ($uriParts as $part) {
                 if ($part != "") {
@@ -89,9 +72,9 @@ namespace Cm\Download {
                 }
             }
 
-            switch ($this->requestMethod) {
-                case 'POST':
-                    $this->request = $this->decodeRequest();
+            switch ($this->request->getMethod()) {
+                case Http::METHOD_POST:
+                    $this->requestData = self::decodeRequestData($this->request->getContentType(), $this->request->getRawBody());
                     break;
 
                 default:
@@ -102,34 +85,17 @@ namespace Cm\Download {
         }
 
         /**
-         * Get request content type
+         * Decode raw input data according to content type
          *
-         * @return string
-         */
-        protected function getContentType()
-        {
-            $contentTypeHeader = $_SERVER['CONTENT_TYPE'];
-            if (strpos($contentTypeHeader, ';') === false) {
-                $contentType = $contentTypeHeader;
-            } else {
-                list($contentType) = explode(';', $contentTypeHeader);
-            }
-
-            return $contentType;
-        }
-
-        /**
-         * Decode the input data
-         *
+         * @param string $contentType data content type
+         * @param string $rawData raw data
          * @return array
          */
-        protected function decodeRequest()
+        protected static function decodeRequestData($contentType, $rawData)
         {
-            $requestData = file_get_contents("php://input");
-
-            switch ($this->contentType) {
+            switch ($contentType) {
                 case Http::CONTENT_TYPE_JSON:
-                    $json = json_decode($requestData, true);
+                    $json = json_decode($rawData, true);
                     return $json;
                     break;
             }
@@ -144,14 +110,14 @@ namespace Cm\Download {
          */
         protected function getApiCall()
         {
-            if ($this->uri == self::URI_API) {
-                if (isset($this->request['method'])
-                    && $this->request['method']
-                    && method_exists($this, $this->request['method'])
+            if ($this->request->getURI() == self::URI_API) {
+                if (isset($this->requestData['method'])
+                    && $this->requestData['method']
+                    && method_exists($this, $this->requestData['method'])
                 ) {
-                    return $this->request['method'];
+                    return $this->requestData['method'];
                 }
-            } elseif (strpos($this->uri, self::URI_API_V1) === 0) {
+            } elseif (strpos($this->request->getURI(), self::URI_API_V1) === 0) {
                 reset($this->uriParts);
                 $method = end($this->uriParts);
                 if (method_exists($this, $method)) {
@@ -198,11 +164,11 @@ namespace Cm\Download {
          */
         protected function get_all_builds()
         {
-            if (!isset($this->request['params']) || !is_array($this->request['params'])
-                || !isset($this->request['params']['device']) || !$this->request['params']['device']) {
+            if (!isset($this->requestData['params']) || !is_array($this->requestData['params'])
+                || !isset($this->requestData['params']['device']) || !$this->requestData['params']['device']) {
                 // invalid request
             }
-            $device = $this->request['params']['device'];
+            $device = $this->requestData['params']['device'];
             $channel = "nightly";
             $apiLevel = 23;
             $device_dir = $this->root . DIRECTORY_SEPARATOR . $device;
