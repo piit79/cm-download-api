@@ -5,7 +5,7 @@ namespace Fw\Http {
 
     use Fw\Http;
 
-    class Response
+    class Response implements ResponseInterface
     {
 
         /**
