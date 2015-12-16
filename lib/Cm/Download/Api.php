@@ -3,11 +3,12 @@
 namespace Cm\Download {
 
 
+    use Fw\DI\InjectionAware;
     use Fw\Http;
     use Fw\Http\RequestInterface;
     use Fw\Http\ResponseInterface;
 
-    class Api
+    class Api extends InjectionAware
     {
 
         const URI_API = '/api';
@@ -59,10 +60,11 @@ namespace Cm\Download {
          */
         function __construct($root, $baseUrl)
         {
+            parent::__construct();
             $this->root = $root;
             $this->baseUrl = $baseUrl;
-            $this->request = new Request();
-            $this->response = new Response();
+            $this->request = $this->di->get('request');
+            $this->response = $this->di->get('response');
         }
 
         /**
