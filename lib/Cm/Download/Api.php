@@ -4,8 +4,8 @@ namespace Cm\Download {
 
 
     use Fw\Http;
-    use Fw\Http\Request;
-    use Fw\Http\Response;
+    use Fw\Http\RequestInterface;
+    use Fw\Http\ResponseInterface;
 
     class Api
     {
@@ -28,12 +28,12 @@ namespace Cm\Download {
         private $baseUrl;
 
         /**
-         * @var Request
+         * @var RequestInterface
          */
         private $request;
 
         /**
-         * @var Response
+         * @var ResponseInterface
          */
         private $response;
 

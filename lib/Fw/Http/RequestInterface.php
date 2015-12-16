@@ -3,34 +3,8 @@
 namespace Fw\Http {
 
 
-    use Fw\Http;
-
-    class Request implements RequestInterface
+    interface RequestInterface
     {
-
-        /**
-         * @var array
-         */
-        protected $headers;
-
-        /**
-         * @var string
-         */
-        protected $contentType;
-
-        /**
-         * @var string
-         */
-        protected $rawBody;
-
-        /**
-         * Request constructor
-         */
-        public function __construct()
-        {
-            $this->headers = getallheaders();
-            $this->rawBody = file_get_contents("php://input");
-        }
 
         /**
          * Gets a variable from the $_REQUEST superglobal applying filters if needed.
@@ -41,18 +15,7 @@ namespace Fw\Http {
          * @param mixed $defaultValue
          * @return mixed
          */
-        public function get($name = null, $filters = null, $defaultValue = null)
-        {
-            if ($name == null) {
-                return $_REQUEST;
-            }
-            if (isset($_GET[$name])) {
-                return $_GET[$name];
-            } elseif ($defaultValue != null) {
-                return $defaultValue;
-            }
-            return null;
-        }
+        public function get($name = null, $filters = null, $defaultValue = null);
 
         /**
          * Gets a variable from the $_POST superglobal applying filters if needed
@@ -63,18 +26,7 @@ namespace Fw\Http {
          * @param mixed $defaultValue
          * @return mixed
          */
-        public function getPost($name = null, $filters = null, $defaultValue = null)
-        {
-            if ($name == null) {
-                return $_POST;
-            }
-            if (isset($_POST[$name])) {
-                return $_POST[$name];
-            } elseif ($defaultValue != null) {
-                return $defaultValue;
-            }
-            return null;
-        }
+        public function getPost($name = null, $filters = null, $defaultValue = null);
 
         /**
          * Gets a variable from put request
@@ -85,18 +37,7 @@ namespace Fw\Http {
          * @return mixed
          */
         /*
-        public function getPut($name = null, $filters = null, $defaultValue = null)
-        {
-            if ($name == null) {
-                return $_PUT;
-            }
-            if (isset($_PUT[$name])) {
-                return $_PUT[$name];
-            } elseif ($defaultValue != null) {
-                return $defaultValue;
-            }
-            return null;
-        }
+        public function getPut($name = null, $filters = null, $defaultValue = null);
         */
 
         /**
@@ -108,18 +49,7 @@ namespace Fw\Http {
          * @param mixed $defaultValue
          * @return mixed
          */
-        public function getQuery($name = null, $filters = null, $defaultValue = null)
-        {
-            if ($name == null) {
-                return $_GET;
-            }
-            if (isset($_REQUEST[$name])) {
-                return $_REQUEST[$name];
-            } elseif ($defaultValue != null) {
-                return $defaultValue;
-            }
-            return null;
-        }
+        public function getQuery($name = null, $filters = null, $defaultValue = null);
 
         /**
          * Gets variable from $_SERVER superglobal
@@ -127,13 +57,7 @@ namespace Fw\Http {
          * @param string $name
          * @return mixed
          */
-        public function getServer($name)
-        {
-            if (isset($_SERVER[$name])) {
-                return $_SERVER[$name];
-            }
-            return null;
-        }
+        public function getServer($name);
 
         /**
          * Checks whether $_REQUEST superglobal has certain index
@@ -141,10 +65,7 @@ namespace Fw\Http {
          * @param string $name
          * @return boolean
          */
-        public function has($name)
-        {
-            return isset($_REQUEST[$name]);
-        }
+        public function has($name);
 
         /**
          * Checks whether $_POST superglobal has certain index
@@ -152,10 +73,7 @@ namespace Fw\Http {
          * @param string $name
          * @return boolean
          */
-        public function hasPost($name)
-        {
-            return isset($_POST[$name]);
-        }
+        public function hasPost($name);
 
         /**
          * Checks whether put has certain index
@@ -163,10 +81,7 @@ namespace Fw\Http {
          * @param string $name
          * @return boolean
          */
-        public function hasPut($name)
-        {
-            return isset($_PUT[$name]);
-        }
+        public function hasPut($name);
 
         /**
          * Checks whether $_GET superglobal has certain index
@@ -174,10 +89,7 @@ namespace Fw\Http {
          * @param string $name
          * @return boolean
          */
-        public function hasQuery($name)
-        {
-            return isset($_GET[$name]);
-        }
+        public function hasQuery($name);
 
         /**
          * Checks whether $_SERVER superglobal has certain index
@@ -185,29 +97,14 @@ namespace Fw\Http {
          * @param string $name
          * @return mixed
          */
-        public function hasServer($name)
-        {
-            return isset($_SERVER[$name]);
-        }
+        public function hasServer($name);
 
         /**
          * Return request content type
          *
          * @return string
          */
-        public function getContentType()
-        {
-            if ($this->contentType == null) {
-                $contentTypeHeader = $this->getServer('CONTENT_TYPE');
-                if (strpos($contentTypeHeader, ';') === false) {
-                    $contentType = $contentTypeHeader;
-                } else {
-                    list($contentType) = explode(';', $contentTypeHeader);
-                }
-                $this->contentType = $contentType;
-            }
-            return $this->contentType;
-        }
+        public function getContentType();
 
         /**
          * Gets HTTP header from request data
@@ -215,36 +112,21 @@ namespace Fw\Http {
          * @param string $header
          * @return string
          */
-        public function getHeader($header)
-        {
-            if (isset($this->headers[$header])) {
-                return $this->headers[$header];
-            }
-            return null;
-        }
+        public function getHeader($header);
 
         /**
          * Gets HTTP scheme (http/https)
          *
          * @return string
          */
-        public function getScheme()
-        {
-            if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'off') {
-                return Http::SCHEME_HTTP;
-            }
-            return Http::SCHEME_HTTPS;
-        }
+        public function getScheme();
 
         /**
          * Checks whether request has been made using ajax. Checks if $_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest'
          *
          * @return boolean
          */
-        public function isAjax()
-        {
-            return $this->getServer("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest";
-        }
+        public function isAjax();
 
         /**
          * Checks whether request has been made using SOAP
@@ -265,10 +147,7 @@ namespace Fw\Http {
          *
          * @return string
          */
-        public function getRawBody()
-        {
-            return $this->rawBody;
-        }
+        public function getRawBody();
 
         /**
          * Gets decoded JSON HTTP raw request body
@@ -276,10 +155,7 @@ namespace Fw\Http {
          * @param boolean $assoc
          * @return string
          */
-        public function getJsonRawBody($assoc = true)
-        {
-            return json_decode($this->rawBody, $assoc);
-        }
+        public function getJsonRawBody($assoc = true);
 
         /**
          * Gets active server address IP
@@ -315,30 +191,21 @@ namespace Fw\Http {
          *
          * @return string
          */
-        public function getMethod()
-        {
-            return $this->getServer('REQUEST_METHOD');
-        }
+        public function getMethod();
 
         /**
          * Gets HTTP URI which request has been made
          *
          * @return string
          */
-        public function getURI()
-        {
-            return $this->getServer('REQUEST_URI');
-        }
+        public function getURI();
 
         /**
          * Gets HTTP user agent used to made the request
          *
          * @return string
          */
-        public function getUserAgent()
-        {
-            return $this->getServer('HTTP_USER_AGENT');
-        }
+        public function getUserAgent();
 
         /**
          * Check if HTTP method match any of the passed methods
@@ -353,70 +220,49 @@ namespace Fw\Http {
          *
          * @return boolean
          */
-        public function isPost()
-        {
-            return $this->getMethod() == Http::METHOD_POST;
-        }
+        public function isPost();
 
         /**
          * Checks whether HTTP method is GET. if $_SERVER['REQUEST_METHOD']=='GET'
          *
          * @return boolean
          */
-        public function isGet()
-        {
-            return $this->getMethod() == Http::METHOD_GET;
-        }
+        public function isGet();
 
         /**
          * Checks whether HTTP method is PUT. if $_SERVER['REQUEST_METHOD']=='PUT'
          *
          * @return boolean
          */
-        public function isPut()
-        {
-            return $this->getMethod() == Http::METHOD_PUT;
-        }
+        public function isPut();
 
         /**
          * Checks whether HTTP method is PATCH. if $_SERVER['REQUEST_METHOD']=='PATCH'
          *
          * @return boolean
          */
-        public function isPatch()
-        {
-            return $this->getMethod() == Http::METHOD_PATCH;
-        }
+        public function isPatch();
 
         /**
          * Checks whether HTTP method is HEAD. if $_SERVER['REQUEST_METHOD']=='HEAD'
          *
          * @return boolean
          */
-        public function isHead()
-        {
-            return $this->getMethod() == Http::METHOD_PATCH;
-        }
+        public function isHead();
 
         /**
          * Checks whether HTTP method is DELETE. if $_SERVER['REQUEST_METHOD']=='DELETE'
          *
          * @return boolean
          */
-        public function isDelete()
-        {
-            return $this->getMethod() == Http::METHOD_DELETE;
-        }
+        public function isDelete();
 
         /**
          * Checks whether HTTP method is OPTIONS. if $_SERVER['REQUEST_METHOD']=='OPTIONS'
          *
          * @return boolean
          */
-        public function isOptions()
-        {
-            return $this->getMethod() == Http::METHOD_DELETE;
-        }
+        public function isOptions();
 
         /**
          * Checks whether request includes attached files
@@ -438,10 +284,7 @@ namespace Fw\Http {
          *
          * @return array
          */
-        public function getHeaders()
-        {
-            return $this->headers;
-        }
+        public function getHeaders();
 
         /**
          * Gets web page that refers active request. ie: http://www.google.com
