@@ -15,3 +15,5 @@ $loader->registerNamespaces(
     )
 );
 $loader->register();
+
+require_once 'services.php';
