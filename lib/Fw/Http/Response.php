@@ -47,16 +47,19 @@ namespace Fw\Http {
         }
 
         /**
-         * Factory method
+         * Set the main response fields
          *
          * @param int $httpCode
          * @param string $contentType
          * @param array|string $data
          * @return Response
          */
-        public static function create($httpCode = 200, $contentType = Http::CONTENT_TYPE_TEXT, $data = "OK")
+        public function setup($httpCode, $contentType, $data)
         {
-            return new self($httpCode, $contentType, $data);
+            $this->setHttpCode($httpCode);
+            $this->setContentType($contentType);
+            $this->setData($data);
+            return $this;
         }
 
         /**

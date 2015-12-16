@@ -33,6 +33,11 @@ namespace Cm\Download {
         private $request;
 
         /**
+         * @var Response
+         */
+        private $response;
+
+        /**
          * Request URI parts split by /
          *
          * @var array
@@ -56,6 +61,8 @@ namespace Cm\Download {
         {
             $this->root = $root;
             $this->baseUrl = $baseUrl;
+            $this->request = new Request();
+            $this->response = new Response();
         }
 
         /**
@@ -63,7 +70,6 @@ namespace Cm\Download {
          */
         protected function getRequest()
         {
-            $this->request = new Request();
             $uriParts = explode('/', $this->request->getURI());
             $this->uriParts = array();
             foreach ($uriParts as $part) {
@@ -78,7 +84,7 @@ namespace Cm\Download {
                     break;
 
                 default:
-                    Response::create(405, Http::CONTENT_TYPE_TEXT,
+                    $this->response->setup(405, Http::CONTENT_TYPE_TEXT,
                         "405 Method Not Allowed\n\nThe method GET is not allowed for this resource.")->send();
                     exit();
             }
@@ -142,7 +148,7 @@ namespace Cm\Download {
                     'result' => null,
                     'error' => "Error decoding JSON",
                 );
-                Response::create(200, Http::CONTENT_TYPE_JSON, $output)->send();
+                $this->response->setup(200, Http::CONTENT_TYPE_JSON, $output)->send();
                 exit();
             }
             return $this->$apiCall();
@@ -214,7 +220,7 @@ namespace Cm\Download {
                 $result[] = $build->toArray();
             }
             $output['result'] = $result;
-            Response::create(200, Http::CONTENT_TYPE_JSON, $output)->send();
+            $this->response->setup(200, Http::CONTENT_TYPE_JSON, $output)->send();
         }
 
         /**
@@ -239,7 +245,7 @@ namespace Cm\Download {
                     ),
                 ),
             );
-            Response::create(200, Http::CONTENT_TYPE_JSON, $responseDeltaNotFound)->send();
+            $this->response->setup(200, Http::CONTENT_TYPE_JSON, $responseDeltaNotFound)->send();
         }
     }
 }
