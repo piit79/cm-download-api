@@ -95,7 +95,7 @@ namespace Fw\DI {
          */
         protected function getServiceInstance()
         {
-            if (is_object($this->definition)) {
+            if (is_object($this->definition) && !($this->definition instanceof \Closure)) {
                 // definition is an object
                 if ($this->shared || $this->instance == null) {
                     return $this->definition;
