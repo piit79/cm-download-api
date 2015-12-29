@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap                   = "bootstrap.php"
+    backupGlobals               = "false"
+    backupStaticAttributes      = "false"
+    verbose                     = "true"
+    colors                      = "true"
+    convertErrorsToExceptions   = "true"
+    convertNoticesToExceptions  = "true"
+    convertWarningsToExceptions = "true"
+    processIsolation            = "false"
+    stopOnFailure               = "false"
+    syntaxCheck                 = "true">
+    <testsuites>
+        <testsuite name="Framework Testsuite">
+            <directory>./cases/framework/</directory>
+        </testsuite>
+        <testsuite name="CM Download API Testsuite">
+            <directory>./cases/api/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
