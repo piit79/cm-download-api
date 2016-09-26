@@ -1,7 +1,7 @@
 <?php
 
-define('APP_DIR', realpath(__DIR__ . DIRECTORY_SEPARATOR . ".."));
-define('LIB_DIR', APP_DIR . DIRECTORY_SEPARATOR . "lib");
+define('APP_DIR', realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
+define('LIB_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'lib');
 define('DEBUG', false);
 
 require_once 'config.php';
@@ -15,5 +15,7 @@ $loader->registerNamespaces(
     )
 );
 $loader->register();
+
+require_once APP_DIR . '/vendor/autoload.php';
 
 require_once 'services.php';

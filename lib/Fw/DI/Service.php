@@ -104,7 +104,7 @@ namespace Fw\DI {
                     return clone $this->definition;
                 }
             } elseif (is_string($this->definition) && class_exists($this->definition)) {
-                // definition is a class
+                // definition is a class name
                 $class = $this->definition;
                 return new $class();
             } elseif (is_callable($this->definition)) {

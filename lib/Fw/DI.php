@@ -122,8 +122,8 @@ namespace Fw {
         /**
          * Register a shared DI service
          *
-         * @param $name string service name
-         * @param $definition string|callable service definition
+         * @param string $name service name
+         * @param string|callable $definition service definition
          */
         public function setShared($name, $definition)
         {
@@ -133,8 +133,8 @@ namespace Fw {
         /**
          * Attempt to set a DI service. Only succeeds if there is no such service yet
          *
-         * @param $name string service name
-         * @param $definition string|callable service definition
+         * @param string $name service name
+         * @param string|callable $definition service definition
          * @param boolean|false $shared whether the service is shared
          * @return boolean returns true if service was registered
          */
@@ -169,7 +169,7 @@ namespace Fw {
          * @param mixed[] $arguments method arguments
          * @return boolean|DI\Service|null
          */
-        public function __call($method, $arguments)
+        public function __call($method, array $arguments)
         {
             if (substr($method, 0, 3) == "get") {
                 $name = strtolower(substr($method, 3));

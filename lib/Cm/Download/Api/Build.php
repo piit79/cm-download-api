@@ -47,16 +47,19 @@ namespace Cm\Download\Api {
 
         /**
          * Build constructor
+         * @param string $url
          * @param string $filename
          * @param int $timestamp
          * @param string $md5sum
          * @param string $incremental
          * @param string $changes
          * @param string $channel
-         * @param string $api_level
+         * @param int $api_level
          */
-        public function __construct($filename = "", $timestamp = null, $md5sum = "", $incremental = "", $changes = "", $channel = "", $api_level = null)
+        public function __construct($url = "", $filename = "", $timestamp = null, $md5sum = "", $incremental = "",
+                                    $changes = "", $channel = "", $api_level = null)
         {
+            $this->url = $url;
             $this->filename = $filename;
             $this->timestamp = $timestamp;
             $this->md5sum = $md5sum;
@@ -217,6 +220,26 @@ namespace Cm\Download\Api {
                 'changes' => $this->changes,
                 'channel' => $this->channel,
                 'api_level' => $this->apiLevel,
+            );
+        }
+
+        /**
+         * Factory function to create a Build object from an associative array
+         *
+         * @param $array array
+         * @return Build
+         */
+        public static function fromArray(array $array)
+        {
+            return new self(
+                $array['url'],
+                $array['filename'],
+                $array['timestamp'],
+                $array['md5sum'],
+                $array['incremental'],
+                $array['changes'],
+                $array['channel'],
+                $array['api_level']
             );
         }
 

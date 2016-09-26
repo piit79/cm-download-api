@@ -12,6 +12,9 @@ $loader->registerNamespaces(
         'Cm'          => "lib/Cm",
         'Fw'          => "lib/Fw",
         'Tests\Mocks' => "tests/mocks",
+        'Tests\Fixtures' => "tests/fixtures",
     )
 );
 $loader->register();
+
+require_once APP_DIR . '/vendor/autoload.php';

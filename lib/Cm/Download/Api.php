@@ -3,6 +3,7 @@
 namespace Cm\Download {
 
 
+    use Cm\Download\Api\BuildList\BuildListInterface;
     use Fw\DI\InjectionAware;
     use Fw\Http;
     use Fw\Http\RequestInterface;
@@ -11,15 +12,9 @@ namespace Cm\Download {
     class Api extends InjectionAware
     {
 
+        const CHANNEL_NIGHTLY = 'nightly';
         const URI_API = '/api';
         const URI_API_V1 = '/api/v1/';
-
-        /**
-         * Build filesystem root
-         *
-         * @var string
-         */
-        private $root;
 
         /**
          * Build filesystem base URL
@@ -53,18 +48,23 @@ namespace Cm\Download {
         private $requestData;
 
         /**
+         * @var BuildListInterface
+         */
+        private $buildList;
+
+        /**
          * Api constructor
          *
-         * @param string $root
          * @param string $baseUrl
          */
-        function __construct($root, $baseUrl)
+        function __construct($baseUrl)
         {
             parent::__construct();
-            $this->root = $root;
             $this->baseUrl = $baseUrl;
             $this->request = $this->di->get('request');
             $this->response = $this->di->get('response');
+            $this->buildList = $this->di->get('buildList');
+            $this->buildList->setBaseUrl($baseUrl);
         }
 
         /**
@@ -97,7 +97,7 @@ namespace Cm\Download {
          *
          * @param string $contentType data content type
          * @param string $rawData raw data
-         * @return array
+         * @return array|false
          */
         protected static function decodeRequestData($contentType, $rawData)
         {
@@ -157,17 +157,6 @@ namespace Cm\Download {
         }
 
         /**
-         * Return the date part of the build filename
-         *
-         * @param string $filename
-         * @return string The date of the build in YYYYMMDD format
-         */
-        protected function getBuildDate($filename) {
-            $parts = explode('-', $filename);
-            return $parts[2];
-        }
-
-        /**
          * get_all_builds API call
          */
         protected function get_all_builds()
@@ -177,48 +166,10 @@ namespace Cm\Download {
                 // invalid request
             }
             $device = $this->requestData['params']['device'];
-            $channel = "nightly";
-            $apiLevel = 23;
-            $device_dir = $this->root . DIRECTORY_SEPARATOR . $device;
-            if (is_dir($device_dir)) {
-                $files = scandir($device_dir);
-            } else {
-                $files = array();
-            }
-            $output = array();
-            $output['id'] = null;
-            $output['error'] = null;
+            $channel = self::CHANNEL_NIGHTLY;
+            $builds = $this->buildList->getBuilds($device, $channel);
             $result = array();
-            foreach ($files as $filename) {
-                $file_path_rel = $device . DIRECTORY_SEPARATOR . $filename;
-                $file_path_full = $this->root . DIRECTORY_SEPARATOR . $file_path_rel;
-                if (!is_file($file_path_full) || substr($filename, -4) != ".zip") {
-                    continue;
-                }
-                $fileUrl = $this->baseUrl . '/' . $file_path_rel;
-                $stat = stat($file_path_full);
-                $timestamp = $stat[9];
-                $md5sumFile = $file_path_full . ".md5sum";
-                $md5sum = null;
-                if (is_file($md5sumFile)) {
-                    $md5sumContents = file_get_contents($md5sumFile);
-                    list($md5sumLine) = explode("\n", $md5sumContents);
-                    if (preg_match('/^([0-9a-f]{32}) /', $md5sumLine, $m)) {
-                        $md5sum = $m[1];
-                    }
-                }
-                $incremental = "4a97bfd9e2";
-                $changes = $this->baseUrl . '/' . $device . '/' . str_replace(".zip", ".changes", $filename);
-                $build = new Api\Build(
-                    $fileUrl,
-                    $filename,
-                    $timestamp,
-                    $md5sum,
-                    $incremental,
-                    $changes,
-                    $channel,
-                    $apiLevel
-                );
+            foreach ($builds as $build) {
                 $result[] = $build->toArray();
             }
             $output['result'] = $result;
