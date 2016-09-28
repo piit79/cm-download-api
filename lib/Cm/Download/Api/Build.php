@@ -56,8 +56,8 @@ namespace Cm\Download\Api {
          * @param string $channel
          * @param int $api_level
          */
-        public function __construct($url = "", $filename = "", $timestamp = null, $md5sum = "", $incremental = "",
-                                    $changes = "", $channel = "", $api_level = null)
+        public function __construct($url = null, $filename = null, $timestamp = null, $md5sum = null,
+                                    $incremental = null, $changes = null, $channel = null, $api_level = null)
         {
             $this->url = $url;
             $this->filename = $filename;
