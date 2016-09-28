@@ -16,4 +16,6 @@ $loader->registerNamespaces(
 );
 $loader->register();
 
+require_once APP_DIR . '/vendor/autoload.php';
+
 require_once 'services.php';
