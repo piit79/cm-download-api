@@ -163,6 +163,32 @@ namespace Fw {
         }
 
         /**
+         * Magic method to get service using attribute notation
+         *
+         * E.g.: $srv = $di->service1
+         *
+         * @param string $name
+         * @return mixed service instance
+         */
+        public function __get($name)
+        {
+            return $this->get($name);
+        }
+
+        /**
+         * Magic method to set service using the attribute notation
+         *
+         * E.g.: $di->service2 = function() { return new \Service2(); };
+         *
+         * @param string $name
+         * @param $definition string|callable service definition
+         */
+        public function __set($name, $definition)
+        {
+            $this->set($name, $definition);
+        }
+
+        /**
          * Magic method to get/set services using getters/setters
          *
          * E.g.: $srv3 = $di->getService3()
@@ -185,8 +211,9 @@ namespace Fw {
                     $shared = null;
                 }
                 $this->set($name, $definition, $shared);
+            } else {
+                throw new \RuntimeException('Method does not exist: ' . __CLASS__ . '::' . $method);
             }
-            throw new \RuntimeException("Method does not exist: " . $method);
         }
 
         /*
