@@ -40,8 +40,8 @@ namespace Fw {
          */
         public static function rm_rf($path)
         {
-            if (realpath($path) == "/") {
-                throw new \InvalidArgumentException("I refuse to be stupid and rm -rf /!");
+            if (realpath($path) == '/') {
+                throw new \InvalidArgumentException('I refuse to be stupid and rm -rf /!');
             }
             $dh = dir($path);
             while ($entry = $dh->read()) {
@@ -73,7 +73,7 @@ namespace Fw {
             if ($tempDir == null) {
                 $tempDir = sys_get_temp_dir();
             }
-            $tempfile = tempnam($tempDir, "");
+            $tempfile = tempnam($tempDir, '');
             if (file_exists($tempfile)) {
                 unlink($tempfile);
             }

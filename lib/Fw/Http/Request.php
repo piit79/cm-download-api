@@ -29,7 +29,7 @@ namespace Fw\Http {
         public function __construct()
         {
             $this->headers = getallheaders();
-            $this->rawBody = file_get_contents("php://input");
+            $this->rawBody = file_get_contents('php://input');
         }
 
         /**
@@ -243,7 +243,7 @@ namespace Fw\Http {
          */
         public function isAjax()
         {
-            return $this->getServer("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest";
+            return $this->getServer('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest';
         }
 
         /**

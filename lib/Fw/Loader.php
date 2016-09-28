@@ -8,7 +8,7 @@ class Loader
      * Root of relative namespace paths
      * @var string
      */
-    private $root = "";
+    private $root = '';
 
     /**
      * List of registered namespaces
@@ -40,7 +40,7 @@ class Loader
             }
             // if namespace root path is relative prepend the global root
             if (substr($namespaceRoot, 0, 1) != DIRECTORY_SEPARATOR) {
-                $namespaceRoot = $this->root . ($namespaceRoot ? DIRECTORY_SEPARATOR : "") . $namespaceRoot;
+                $namespaceRoot = $this->root . ($namespaceRoot ? DIRECTORY_SEPARATOR : '') . $namespaceRoot;
             }
             $this->namespaces[$namespace] = $namespaceRoot;
         }
@@ -53,7 +53,7 @@ class Loader
     }
 
     /**
-     * Compare namespaces treating the root namespace "\" as "smallest"
+     * Compare namespaces treating the root namespace "\" as the smallest
      *
      * @param string $a
      * @param string $b
@@ -61,12 +61,12 @@ class Loader
      */
     protected static function compareNamespaces($a, $b)
     {
-        if ($a != "\\" && $b != "\\") {
+        if ($a != '\\' && $b != '\\') {
             return strcmp($a, $b);
         }
         if ($a == $b) {
             return 0;
-        } elseif ($a == "\\") {
+        } elseif ($a == '\\') {
             return -1;
         }
         return 1;
@@ -103,7 +103,7 @@ class Loader
     {
         $matches = array();
         if (!preg_match('/^(.*\\\\?)([^\\\\]+)$/U', $fullClassName, $matches)) {
-            throw new \RuntimeException("Invalid class specification: " . $fullClassName);
+            throw new \RuntimeException('Invalid class specification: ' . $fullClassName);
         }
         $classNamespace = $matches[1];
         $className = $matches[2];
@@ -125,12 +125,12 @@ class Loader
     protected static function getRelativeNamespace($namespace1, $namespace2)
     {
         if ($namespace1 == $namespace2) {
-            return "";
+            return '';
         }
-        if ($namespace1 == "\\") {
+        if ($namespace1 == '\\') {
             return $namespace2;
         }
-        if (($namespace2 != "\\" && strpos($namespace2, $namespace1) === 0)
+        if (($namespace2 != '\\' && strpos($namespace2, $namespace1) === 0)
             || $namespace2 == $namespace1) {
             // strip the namespace1 prefix from namespace2
             $relativeNamespace = substr($namespace2, strlen($namespace1));
@@ -150,8 +150,8 @@ class Loader
     protected static function getClassPath($namespaceRoot, $relativeNamespace, $className)
     {
         // treat underscores in class names as namespace separators
-        $classFilename = str_replace('_', DIRECTORY_SEPARATOR, $className) . ".php";
-        $classPathRelative = str_replace("\\", DIRECTORY_SEPARATOR, $relativeNamespace);
+        $classFilename = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+        $classPathRelative = str_replace('\\', DIRECTORY_SEPARATOR, $relativeNamespace);
         $classPathFull = $namespaceRoot . DIRECTORY_SEPARATOR . $classPathRelative . $classFilename;
         return $classPathFull;
     }
@@ -164,7 +164,7 @@ class Loader
      */
     public function register($prepend = false)
     {
-        return spl_autoload_register(array($this, "autoload"), false, $prepend);
+        return spl_autoload_register(array($this, 'autoload'), false, $prepend);
     }
 
 }

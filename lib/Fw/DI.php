@@ -171,10 +171,10 @@ namespace Fw {
          */
         public function __call($method, $arguments)
         {
-            if (substr($method, 0, 3) == "get") {
+            if (substr($method, 0, 3) == 'get') {
                 $name = strtolower(substr($method, 3));
                 return $this->get($name);
-            } elseif (substr($method, 0, 3) == "set") {
+            } elseif (substr($method, 0, 3) == 'set') {
                 $name = strtolower(substr($method, 3));
                 $definition = $arguments[0];
                 if (isset($arguments[1])) {

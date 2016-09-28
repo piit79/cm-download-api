@@ -75,7 +75,7 @@ namespace Cm\Download {
             $uriParts = explode('/', $this->request->getURI());
             $this->uriParts = array();
             foreach ($uriParts as $part) {
-                if ($part != "") {
+                if ($part != '') {
                     $this->uriParts[] = $part;
                 }
             }
@@ -148,7 +148,7 @@ namespace Cm\Download {
                 $output = array(
                     'id' => null,
                     'result' => null,
-                    'error' => "Error decoding JSON",
+                    'error' => 'Error decoding JSON',
                 );
                 $this->response->setup(200, Http::CONTENT_TYPE_JSON, $output)->send();
                 exit();
@@ -235,15 +235,15 @@ namespace Cm\Download {
             $responseInvalidInput = array(
                 'errors' => array(
                     array(
-                        'reason' => "internal server error",
-                        'message' => "Internal Server Error",
+                        'reason' => 'internal server error',
+                        'message' => 'Internal Server Error',
                     ),
                 ),
             );
             $responseDeltaNotFound = array(
                 'errors' => array(
                     array(
-                        'message' => "Unable to find delta",
+                        'message' => 'Unable to find delta',
                     ),
                 ),
             );
