@@ -29,9 +29,9 @@ class Loader
     /**
      * Register namespaces
      *
-     * @param $namespaces
+     * @param $namespaces array
      */
-    public function registerNamespaces($namespaces)
+    public function registerNamespaces(array $namespaces)
     {
         foreach ($namespaces as $namespace => $namespaceRoot) {
             // make sure the namespace internally ends in a backslash
@@ -149,7 +149,8 @@ class Loader
      */
     protected static function getClassPath($namespaceRoot, $relativeNamespace, $className)
     {
-        $classFilename = $className . ".php";
+        // treat underscores in class names as namespace separators
+        $classFilename = str_replace('_', DIRECTORY_SEPARATOR, $className) . ".php";
         $classPathRelative = str_replace("\\", DIRECTORY_SEPARATOR, $relativeNamespace);
         $classPathFull = $namespaceRoot . DIRECTORY_SEPARATOR . $classPathRelative . $classFilename;
         return $classPathFull;
