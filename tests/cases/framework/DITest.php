@@ -56,7 +56,7 @@ namespace Tests\Cases\Framework {
 
     use Fw\DI;
 
-    class DITest extends \PHPUnit_Framework_Testcase
+    class DITest extends \PHPUnit_Framework_TestCase
     {
 
         /**
@@ -68,21 +68,6 @@ namespace Tests\Cases\Framework {
         {
             parent::setUpBeforeClass();
             self::$di = DI::getInstance();
-        }
-
-        /**
-         * Test all possible service definition types
-         *
-         * @param string $serviceName
-         * @param mixed $definition service definition
-         * @param string $className service class name
-         * @dataProvider serviceDefinitionsTestProvider
-         */
-        public function testServiceDefinitions($serviceName, $definition, $className)
-        {
-            self::$di->set($serviceName, $definition);
-            $svc = self::$di->get($serviceName);
-            $this->assertTrue(is_a($svc, $className));
         }
 
         public function serviceDefinitionsTestProvider()
@@ -98,13 +83,71 @@ namespace Tests\Cases\Framework {
         }
 
         /**
+         * Test all possible service definition types
+         *
+         * @param string $serviceName
+         * @param mixed $definition service definition
+         * @param string $className service class name
+         * @dataProvider serviceDefinitionsTestProvider
+         */
+        public function testServiceDefinitions($serviceName, $definition, $className)
+        {
+            // set service using the standard set() method
+            $service1 = $serviceName . 'a';
+            self::$di->set($service1, $definition, true);
+
+            // set service using the magic set<ServiceName>() method
+            $service2 = $serviceName . 'b';
+            $method = 'set' . ucfirst($service2);
+            self::$di->$method($definition);
+
+            // set service using the attribute notation: $di->service = <definition>;
+            $service3 = $serviceName . 'c';
+            self::$di->$service3 = $definition;
+
+            // get services using the standard get() method
+            $service1a = self::$di->get($service1);
+            $service2a = self::$di->get($service2);
+            $service3a = self::$di->get($service3);
+            $this->assertTrue(is_a($service1a, $className));
+            $this->assertTrue(is_a($service2a, $className));
+            $this->assertTrue(is_a($service3a, $className));
+
+            // get services using the magic get<ServiceName>() method
+            $method1 = 'get' . ucfirst($service1);
+            $method2 = 'get' . ucfirst($service2);
+            $method3 = 'get' . ucfirst($service3);
+            $service1b = self::$di->$method1();
+            $service2b = self::$di->$method2();
+            $service3b = self::$di->$method3();
+            $this->assertTrue(is_a($service1b, $className));
+            $this->assertTrue(is_a($service2b, $className));
+            $this->assertTrue(is_a($service3b, $className));
+            // service is shared - the same instance should be returned
+            $this->assertTrue($service1b === $service1a, $service1 . ': $service1b !== $service1a');
+
+            // get services using the attribute notation: $di->service
+            $service1c = self::$di->$service1;
+            $service2c = self::$di->$service2;
+            $service3c = self::$di->$service3;
+            $this->assertTrue(is_a($service1c, $className));
+            $this->assertTrue(is_a($service2c, $className));
+            $this->assertTrue(is_a($service3c, $className));
+            // service is shared - the same instance should be returned
+            $this->assertTrue($service1c === $service1a, $service1 . ': $service1c !== $service1a');
+        }
+
+        /**
          * Test shared and non-shared services
          *
          * @param string $serviceName
-         * @dataProvider sharedNonSharedTestProvider
+         * @dataProvider serviceDefinitionsTestProvider
          */
-        public function testSharedNonShared($serviceName)
+        public function testSharedNonShared($serviceName, $definition, $className)
         {
+            // services were set in testServiceDefinitions()
+            $serviceName .= 'a';
+
             // test that two instances of a shared service are identical
             self::$di->getService($serviceName)->setShared(true);
             $s1a = self::$di->get($serviceName);
@@ -116,16 +159,6 @@ namespace Tests\Cases\Framework {
             $s2a = self::$di->get($serviceName);
             $s2b = self::$di->get($serviceName);
             $this->assertTrue($s2a !== $s2b);
-        }
-
-        public function sharedNonSharedTestProvider()
-        {
-            $serviceDefinitions = $this->serviceDefinitionsTestProvider();
-            $data = array();
-            foreach ($serviceDefinitions as $svc) {
-                $data[] = array($svc[0]);
-            }
-            return $data;
         }
 
     }
