@@ -223,5 +223,27 @@ namespace Cm\Download\Api {
             ];
         }
 
+        /**
+         * Factory function to create a Build object from an associative array
+         *
+         * If some of the array keys are not set default value of null will be used.
+         *
+         * @param $array array
+         * @return Build
+         */
+        public static function fromArray(array $array)
+        {
+            return new self(
+                isset($array['url']) ? $array['url'] : null,
+                isset($array['filename']) ? $array['filename'] : null,
+                isset($array['timestamp']) ? $array['timestamp'] : null,
+                isset($array['md5sum']) ? $array['md5sum'] : null,
+                isset($array['incremental']) ? $array['incremental'] : null,
+                isset($array['changes']) ? $array['changes'] : null,
+                isset($array['channel']) ? $array['channel'] : null,
+                isset($array['api_level']) ? $array['api_level'] : null
+            );
+        }
+
     }
 }
