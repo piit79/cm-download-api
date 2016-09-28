@@ -211,16 +211,16 @@ namespace Cm\Download\Api {
          */
         public function toArray()
         {
-            return array(
-                'url' => $this->url,
-                'filename' => $this->filename,
-                'timestamp' => $this->timestamp,
-                'md5sum' => $this->md5sum,
+            return [
+                'url'         => $this->url,
+                'filename'    => $this->filename,
+                'timestamp'   => $this->timestamp,
+                'md5sum'      => $this->md5sum,
                 'incremental' => $this->incremental,
-                'changes' => $this->changes,
-                'channel' => $this->channel,
-                'api_level' => $this->apiLevel,
-            );
+                'changes'     => $this->changes,
+                'channel'     => $this->channel,
+                'api_level'   => $this->apiLevel,
+            ];
         }
 
     }
